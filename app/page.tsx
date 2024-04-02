@@ -1,8 +1,20 @@
 /* eslint-disable jsx-a11y/alt-text */
 "use client";
 import { useRef } from "react";
-import { Group, Mesh, Object3D } from "three";
-import { Canvas, createPortal, useFrame, useThree } from "@react-three/fiber";
+import {
+  Group,
+  Mesh,
+  MeshBasicMaterial,
+  MeshStandardMaterial,
+  Object3D,
+} from "three";
+import {
+  Canvas,
+  MeshBasicMaterialProps,
+  createPortal,
+  useFrame,
+  useThree,
+} from "@react-three/fiber";
 import {
   useFBO,
   useGLTF,
@@ -13,8 +25,13 @@ import {
   Preload,
   ScrollControls,
   MeshTransmissionMaterial,
+  ImageProps,
 } from "@react-three/drei";
 import { easing } from "maath";
+import {
+  MeshReflectorMaterial,
+  MeshReflectorMaterialProps,
+} from "@react-three/drei/materials/MeshReflectorMaterial";
 
 function Cube() {
   const meshRef = useRef<Mesh>(null);
@@ -38,28 +55,42 @@ function Cube() {
 // https://codesandbox.io/p/sandbox/scrollcontrols-and-lens-refraction-forked-zhnqkr?file=%2Fsrc%2Fstyles.css%3A29%2C1
 
 function Images() {
-  // this needs a type
-  const group = useRef(null);
+  const group = useRef<Group>(null);
   const data = useScroll();
   const { width, height } = useThree((state) => state.viewport);
   useFrame(() => {
     if (!group.current) return;
-    group.current.children[0].material = 1 + data.range(0, 1 / 3) / 3;
-    group.current.children[1].material.zoom = 1 + data.range(0, 1 / 3) / 3;
-    group.current.children[2].material.zoom =
-      1 + data.range(1.15 / 3, 1 / 3) / 2;
-    group.current.children[3].material.zoom =
-      1 + data.range(1.15 / 3, 1 / 3) / 2;
-    group.current.children[4].material.zoom =
-      1 + data.range(1.15 / 3, 1 / 3) / 2;
-    group.current.children[5].material.grayscale =
-      1 - data.range(1.6 / 3, 1 / 3);
-    group.current.children[6].material.zoom =
-      1 + (1 - data.range(2 / 3, 1 / 3)) / 3;
+
+    group.current.children.forEach((child, i) => {
+      if (child instanceof Mesh) {
+        const castChild = child.material as ImageProps;
+
+        switch (i) {
+          case 2:
+            castChild.zoom = 1 + data.range(1.15 / 3, 1 / 3) / 2;
+            break;
+          case 3:
+            castChild.zoom = 1 + data.range(1.15 / 3, 1 / 3) / 2;
+            break;
+          case 4:
+            castChild.zoom = 1 + data.range(1.15 / 3, 1 / 3) / 2;
+            break;
+          case 5:
+            castChild.grayscale = 1 - data.range(1.6 / 3, 1 / 3);
+            break;
+          case 6:
+            castChild.zoom = 1 + (1 - data.range(2 / 3, 1 / 3)) / 3;
+            break;
+          default:
+            castChild.zoom = 1 + data.range(0, 1 / 3) / 3;
+            break;
+        }
+      }
+    });
   });
   return (
     <group ref={group}>
-      <Image position={[-2, 0, 0]} scale={[4, height]} url="/img1.jpg" />
+      <Image position={[-2, 0, 2]} scale={[4, height]} url="/img1.jpg" />
       <Image position={[2, 0, 3]} scale={3} url="/img6.jpg" />
       <Image position={[-2.05, -height, 6]} scale={[1, 3]} url="/trip2.jpg" />
       <Image position={[-0.6, -height, 9]} scale={[1, 2]} url="/img8.jpg" />
