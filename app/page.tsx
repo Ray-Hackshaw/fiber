@@ -26,28 +26,33 @@ import {
   ScrollControls,
   MeshTransmissionMaterial,
   ImageProps,
+  GradientTexture,
 } from "@react-three/drei";
 import { easing } from "maath";
-import {
-  MeshReflectorMaterial,
-  MeshReflectorMaterialProps,
-} from "@react-three/drei/materials/MeshReflectorMaterial";
 
 function Cube() {
   const meshRef = useRef<Mesh>(null);
+  const data = useScroll();
 
   useFrame(() => {
     if (!meshRef.current) return;
     if (!meshRef.current.rotation) return;
-
-    meshRef.current.rotation.x += 0.01;
-    meshRef.current.rotation.y += 0.01;
+    meshRef.current.rotation.x = 1 + data.range(0, 1 / 3);
+    meshRef.current.rotation.y = 1 + data.range(0, 1 / 3);
+    meshRef.current.position.y = data.offset;
+    console.log("data.offset", data.offset);
   });
 
   return (
-    <mesh ref={meshRef} position={[0, 0, 0]}>
+    <mesh ref={meshRef} position-={[0, 0, 0]}>
       <boxGeometry args={[2, 2, 2]} />
-      <meshStandardMaterial />
+      <meshBasicMaterial>
+        <GradientTexture
+          stops={[0, 1]} // As many stops as you want
+          colors={["white", "black"]} // Colors need to match the number of stops
+          size={1024} // Size is optional, default = 1024
+        />
+      </meshBasicMaterial>
     </mesh>
   );
 }
@@ -112,11 +117,11 @@ function Images() {
 export default function Home() {
   return (
     <Canvas camera={{ position: [0, 0, 20], fov: 15 }}>
-      <Cube />
-
       <ScrollControls damping={0.2} pages={3} distance={0.5}>
         {/* <Lens> */}
         <Scroll>
+          <Cube />
+
           {/* <Typography /> */}
           <Images />
         </Scroll>
