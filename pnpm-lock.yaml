@@ -23,6 +23,9 @@ dependencies:
   glsl-random:
     specifier: ^0.0.5
     version: 0.0.5
+  maath:
+    specifier: ^0.10.7
+    version: 0.10.7(@types/three@0.163.0)(three@0.160.1)
   next:
     specifier: ^13.4.4
     version: 13.4.4(@babel/core@7.24.3)(react-dom@18.2.0)(react@18.2.0)
