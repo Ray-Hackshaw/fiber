@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   Group,
   Mesh,
@@ -37,20 +37,22 @@ function Cube() {
   useFrame(() => {
     if (!meshRef.current) return;
     if (!meshRef.current.rotation) return;
-    meshRef.current.rotation.x = 1 + data.range(0, 1 / 3);
-    meshRef.current.rotation.y = 1 + data.range(0, 1 / 3);
-    meshRef.current.position.y = data.offset;
-    console.log("data.offset", data.offset);
+    meshRef.current.rotation.x = 1 + data.range(0, 1);
+    meshRef.current.rotation.y = 1 + data.range(0, 1);
   });
 
   return (
-    <mesh ref={meshRef} position-={[0, 0, 0]}>
+    <mesh
+      ref={meshRef}
+      //   onWheel={() => setYPosition(data.offset * 10)}
+      position={[0, 0, 0]}
+    >
       <boxGeometry args={[2, 2, 2]} />
       <meshBasicMaterial>
         <GradientTexture
-          stops={[0, 1]} // As many stops as you want
-          colors={["white", "black"]} // Colors need to match the number of stops
-          size={1024} // Size is optional, default = 1024
+          stops={[0, 1]}
+          colors={["white", "black"]}
+          size={1024}
         />
       </meshBasicMaterial>
     </mesh>
@@ -117,11 +119,10 @@ function Images() {
 export default function Home() {
   return (
     <Canvas camera={{ position: [0, 0, 20], fov: 15 }}>
-      <ScrollControls damping={0.2} pages={3} distance={0.5}>
+      <ScrollControls damping={0.3} pages={4}>
         {/* <Lens> */}
+        <Cube />
         <Scroll>
-          <Cube />
-
           {/* <Typography /> */}
           <Images />
         </Scroll>
