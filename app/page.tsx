@@ -1,70 +1,69 @@
 /* eslint-disable jsx-a11y/alt-text */
 "use client";
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { Group, Mesh } from "three";
+import { Canvas, Vector3, useFrame, useThree } from "@react-three/fiber";
 import {
-  Group,
-  Mesh,
-  MeshBasicMaterial,
-  MeshStandardMaterial,
-  Object3D,
-} from "three";
-import {
-  Canvas,
-  MeshBasicMaterialProps,
-  createPortal,
-  useFrame,
-  useThree,
-} from "@react-three/fiber";
-import {
-  useFBO,
-  useGLTF,
   useScroll,
-  Text,
   Image,
   Scroll,
   Preload,
   ScrollControls,
-  MeshTransmissionMaterial,
   ImageProps,
-  GradientTexture,
 } from "@react-three/drei";
-import { easing } from "maath";
-
-function Cube() {
-  const meshRef = useRef<Mesh>(null);
-  const data = useScroll();
-
-  useFrame(() => {
-    if (!meshRef.current) return;
-    if (!meshRef.current.rotation) return;
-    meshRef.current.rotation.x = 1 + data.range(0, 1);
-    meshRef.current.rotation.y = 1 + data.range(0, 1);
-  });
-
-  return (
-    <mesh
-      ref={meshRef}
-      //   onWheel={() => setYPosition(data.offset * 10)}
-      position={[0, 0, 0]}
-    >
-      <boxGeometry args={[2, 2, 2]} />
-      <meshBasicMaterial>
-        <GradientTexture
-          stops={[0, 1]}
-          colors={["white", "black"]}
-          size={1024}
-        />
-      </meshBasicMaterial>
-    </mesh>
-  );
-}
+import { Cube } from "@/src/components/Cube";
 
 // https://codesandbox.io/p/sandbox/scrollcontrols-and-lens-refraction-forked-zhnqkr?file=%2Fsrc%2Fstyles.css%3A29%2C1
 
-function Images() {
+interface ImageEntry {
+  position?: Vector3;
+  scale: number | [number, number];
+  url: string;
+}
+
+const Images = () => {
   const group = useRef<Group>(null);
   const data = useScroll();
   const { width, height } = useThree((state) => state.viewport);
+
+  const imageArray: ImageEntry[] = [
+    {
+      position: [-2, 0, 2],
+      scale: [4, height],
+      url: "/img1.jpg",
+    },
+    {
+      position: [2, 0, 3],
+      scale: 3,
+      url: "/img6.jpg",
+    },
+    {
+      position: [-2.05, -height, 6],
+      scale: [1, 3],
+      url: "/trip2.jpg",
+    },
+    {
+      position: [-0.6, -height, 9],
+      scale: [1, 2],
+      url: "/img8.jpg",
+    },
+    {
+      position: [0.75, -height, 10.5],
+      scale: 1.5,
+      url: "/trip4.jpg",
+    },
+    {
+      position: [0, -height * 1.5, 7.5],
+      scale: [1.5, 3],
+      url: "/img3.jpg",
+    },
+    {
+      position: [0, -height * 2 - height / 4, 2],
+      scale: [width, height / 1.1],
+      url: "/img7.jpg",
+    },
+  ];
+
   useFrame(() => {
     if (!group.current) return;
 
@@ -97,36 +96,52 @@ function Images() {
   });
   return (
     <group ref={group}>
-      <Image position={[-2, 0, 2]} scale={[4, height]} url="/img1.jpg" />
-      <Image position={[2, 0, 3]} scale={3} url="/img6.jpg" />
-      <Image position={[-2.05, -height, 6]} scale={[1, 3]} url="/trip2.jpg" />
-      <Image position={[-0.6, -height, 9]} scale={[1, 2]} url="/img8.jpg" />
-      <Image position={[0.75, -height, 10.5]} scale={1.5} url="/trip4.jpg" />
-      <Image
-        position={[0, -height * 1.5, 7.5]}
-        scale={[1.5, 3]}
-        url="/img3.jpg"
-      />
-      <Image
-        position={[0, -height * 2 - height / 4, 2]}
-        scale={[width, height / 1.1]}
-        url="/img7.jpg"
-      />
+      {imageArray.map((x) => (
+        <Image key={x.url} position={x.position} scale={x.scale} url={x.url} />
+      ))}
     </group>
   );
-}
+};
 
-export default function Home() {
+const cubesArray = [
+  {
+    position: [-2, 0, 0],
+  },
+  {
+    position: [3, 0.5, 0],
+  },
+  {
+    position: [0, 2, 0],
+  },
+  {
+    position: [4, -3, 0],
+  },
+  {
+    position: [1, -2, 0],
+  },
+  {
+    position: [-4, -3, 0],
+  },
+];
+
+const Home = () => {
   return (
     <Canvas camera={{ position: [0, 0, 20], fov: 15 }}>
-      <ScrollControls damping={0.3} pages={4}>
-        {/* <Lens> */}
-        <Cube />
+      <ScrollControls damping={0.3} pages={3}>
+        {/* {cubesArray.map((cube, i) => (
+          <Cube key={i} inputPos={cube.position as Vector3} />
+        ))} */}
         <Scroll>
-          {/* <Typography /> */}
           <Images />
         </Scroll>
         <Scroll html>
+          <div
+            style={{ transform: "translate3d(60vw, 85vh, 5vh)" }}
+            className="text-3xl"
+          >
+            CubDesign - Bespoke 3D Digital Design Portfolio
+            <br />
+          </div>
           <div style={{ transform: "translate3d(65vw, 192vh, 0)" }}>
             Taken from pmdrs example
             <br />
@@ -136,12 +151,10 @@ export default function Home() {
             <br />
           </div>
         </Scroll>
-        {/** This is a helper that pre-emptively makes threejs aware of all geometries, textures etc
-               By default threejs will only process objects if they are "seen" by the camera leading 
-               to jank as you scroll down. With <Preload> that's solved.  */}
         <Preload />
-        {/* </Lens> */}
       </ScrollControls>
     </Canvas>
   );
-}
+};
+
+export default Home;
