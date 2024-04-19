@@ -12,6 +12,7 @@ import {
   ImageProps,
 } from "@react-three/drei";
 import { Cube } from "@/src/components/Cube";
+import Link from "next/link";
 
 // https://codesandbox.io/p/sandbox/scrollcontrols-and-lens-refraction-forked-zhnqkr?file=%2Fsrc%2Fstyles.css%3A29%2C1
 
@@ -124,36 +125,80 @@ const cubesArray = [
   },
 ];
 
+const navLinks = [
+  {
+    href: "/examples",
+    label: "examples",
+  },
+  {
+    href: "/about",
+    label: "about",
+  },
+  {
+    href: "/contact",
+    label: "contact",
+  },
+  {
+    href: "https://github.com/Ray-Hackshaw",
+    label: "github",
+  },
+];
+
 const Home = () => {
   return (
-    <Canvas camera={{ position: [0, 0, 20], fov: 15 }}>
-      <ScrollControls damping={0.3} pages={3}>
-        {/* {cubesArray.map((cube, i) => (
+    <div className="h-full space-y-4 p-4">
+      <div className="flex w-full justify-between">
+        <h1>
+          <Link className="text-xl text-white" href="/examples">
+            React Three Fiber - Component Library
+          </Link>
+        </h1>
+        <div className="flex gap-2 pt-[5px]">
+          {navLinks.map((x) => (
+            <div key={x.href}>
+              <Link
+                href={x.href}
+                className="text-white opacity-80 hover:opacity-100 transition-all duration-200 ease-in-out"
+              >
+                {x.label}
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <Canvas camera={{ position: [0, 0, 20], fov: 15 }} style={{}}>
+        <ScrollControls damping={0.3} pages={3}>
+          {/* {cubesArray.map((cube, i) => (
           <Cube key={i} inputPos={cube.position as Vector3} />
         ))} */}
-        <Scroll>
-          <Images />
-        </Scroll>
-        <Scroll html>
-          <div
-            style={{ transform: "translate3d(60vw, 85vh, 5vh)" }}
-            className="text-3xl"
-          >
-            CubDesign - Bespoke 3D Digital Design Portfolio
-            <br />
-          </div>
-          <div style={{ transform: "translate3d(65vw, 192vh, 0)" }}>
-            Taken from pmdrs example
-            <br />
-            bronze, 38 cm
-            <br />
-            CHF 59.95
-            <br />
-          </div>
-        </Scroll>
-        <Preload />
-      </ScrollControls>
-    </Canvas>
+          <Scroll>
+            <Images />
+          </Scroll>
+          <Scroll html>
+            <div
+              style={{ transform: "translate3d(60vw, 85vh, 5vh)" }}
+              className="text-3xl"
+            >
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+              Architecto corporis impedit totam, voluptate excepturi mollitia
+              repellat alias, vitae illo eligendi ea officia voluptatibus,
+              corrupti natus eum dolor animi ad ipsum!
+              <br />
+            </div>
+            <div style={{ transform: "translate3d(65vw, 192vh, 0)" }}>
+              Taken from pmdrs example
+              <br />
+              bronze, 38 cm
+              <br />
+              CHF 59.95
+              <br />
+            </div>
+          </Scroll>
+          <Preload />
+        </ScrollControls>
+      </Canvas>
+    </div>
   );
 };
 

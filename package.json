@@ -19,6 +19,7 @@
     "@react-three/fiber": "^8.15.12",
     "@types/node": "^20.12.2",
     "@types/react": "^18.2.73",
+    "classnames": "^2.5.1",
     "glsl-random": "^0.0.5",
     "maath": "^0.10.7",
     "next": "^13.4.4",
