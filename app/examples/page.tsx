@@ -50,7 +50,7 @@ const ExamplesLanding: NextPage = () => {
         Component example library using React Three Fiber (Three.js).
       </h1>
 
-      <div className="grid grid-cols-3 max-w-7xl w-full mx-auto gap-4">
+      <div className="grid grid-cols-3 max-w-7xl w-full mx-auto gap-4 border-2">
         {cards.map((card) => (
           <div
             key={card.href}

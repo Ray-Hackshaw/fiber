@@ -150,7 +150,7 @@ const Home = () => {
       <div className="flex w-full justify-between">
         <h1>
           <Link className="text-xl text-white" href="/examples">
-            React Three Fiber - Component Library
+            R3F - Component Library
           </Link>
         </h1>
         <div className="flex gap-2 pt-[5px]">

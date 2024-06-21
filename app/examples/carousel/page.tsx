@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 
 const Carousel: NextPage = () => {
-  return <div>Cursor</div>;
+  return <div>Carousel</div>;
 };
 
 export default Carousel;
